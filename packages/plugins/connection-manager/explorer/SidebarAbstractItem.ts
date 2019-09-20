@@ -12,7 +12,9 @@ export default abstract class SidebarAbstractItem<T extends SidebarItemIterface<
   tree?: {
     [id: string]: SidebarAbstractItem;
   };
-  snippet?: SnippetString;
+  get snippet() {
+    return new SnippetString(this.label);
+  };
   abstract value: string;
   abstract conn: ConnectionInterface;
   abstract items: T[];

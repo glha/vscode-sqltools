@@ -15,12 +15,12 @@ function formatSqlHandler(editor: TextEditor, edit: TextEditorEdit): void {
   }
 }
 
-function insertTextHandler(node: { value: string, snippet?: SnippetString } | string | SnippetString) {
+function insertTextHandler(node: { snippet?: SnippetString } | string | SnippetString) {
   if (!node) return;
   if (typeof node === 'string' || node instanceof SnippetString) {
     return insertText(node);
   }
-  return insertText(node.snippet || node.value);
+  return insertText(node.snippet);
 }
 
 function generateInsertQueryHandler(item: { columns: DatabaseInterface.TableColumn[], name?: string }) {
