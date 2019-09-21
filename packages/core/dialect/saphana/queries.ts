@@ -14,7 +14,7 @@ export default {
       VIEW_COLUMNS C
     WHERE
       C.SCHEMA_NAME = ? and C.VIEW_NAME = ?`,
-  fetchColumns: `
+  fetchColumns: () => `
 SELECT
   C.TABLE_NAME AS tableName,
   C.COLUMN_NAME AS columnName,
@@ -60,7 +60,7 @@ WHERE
   D.SCHEMA_NAME = ?`,
 
   fetchRecords: 'SELECT TOP :limit * FROM :table',
-  fetchTables: `
+  fetchTables: () => `
   
 SELECT
   A.TABLE_NAME AS tableName,

@@ -2,6 +2,7 @@ import {
   ConnectionDialect,
   DialectQueries,
   ConnectionInterface,
+  DatabasesFilterType,
 } from '@sqltools/core/interface';
 import Dialects from '@sqltools/core/dialect';
 import * as Utils from '@sqltools/core/utils';
@@ -79,5 +80,15 @@ export default abstract class GenericDialect<ConnectionType extends any> impleme
       });
     }
     return false
+  }
+
+  public getBaseQueryFilters() {
+    const databaseFilter: DatabasesFilterType = this.credentials.databasesFilter || <DatabasesFilterType>{};
+    databaseFilter.show = databaseFilter.show || (Utils.isEmpty(databaseFilter.hide) ? [this.credentials.database] : []);
+    databaseFilter.hide = databaseFilter.hide || [];
+
+    return {
+      databaseFilter
+    };
   }
 }

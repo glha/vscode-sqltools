@@ -1,10 +1,16 @@
+import { DatabasesFilterType } from './connection';
+
+interface Filters {
+  databaseFilter?: DatabasesFilterType;
+};
+
 export interface DialectQueries {
-  fetchTables: string;
+  fetchTables: (filters?: Filters) => string;
   describeTable: string;
-  fetchColumns: string;
+  fetchColumns: (filters?: Filters) => string;
   fetchRecords: string;
-  fetchFunctions?: string;
-  [id: string]: string;
+  fetchFunctions?: (filters?: Filters) => string;
+  [id: string]: string | ((...args: any[]) => string);
 }
 
 export enum DatabaseDialect {

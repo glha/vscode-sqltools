@@ -82,7 +82,7 @@ export default class SQLite extends GenericDialect<SQLiteLib.Database> implement
   }
 
   public async getTables(): Promise<DatabaseInterface.Table[]> {
-    const [ queryRes ] = await this.query(this.queries.fetchTables);
+    const [ queryRes ] = await this.query(this.queries.fetchTables());
     return queryRes.results
       .reduce((prev, curr) => prev.concat(curr), [])
       .map((obj) => {
@@ -101,8 +101,8 @@ export default class SQLite extends GenericDialect<SQLiteLib.Database> implement
 
     await Promise.all(allTables.map(async t => {
       const [[{ results: tableColumns }], [{ results: fks }]] = await Promise.all([
-        this.query(Utils.replacer(this.queries.fetchColumns, { table: t.name })),
-        this.query(Utils.replacer(this.queries.listFks, { table: t.name })),
+        this.query(Utils.replacer(this.queries.fetchColumns(), { table: t.name })),
+        this.query(Utils.replacer(<string>this.queries.listFks, { table: t.name })),
       ]);
 
       const fksMap = fks.reduce((agg, fk) => ({ ...agg, [fk.from]: true }), {});

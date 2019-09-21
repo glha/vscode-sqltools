@@ -114,7 +114,7 @@ export default class MSSQL extends GenericDialect<MSSQLLib.ConnectionPool> imple
   }
 
   public getTables(): Promise<DatabaseInterface.Table[]> {
-    return this.query(this.queries.fetchTables)
+    return this.query(this.queries.fetchTables())
       .then(([queryRes]) => {
         return queryRes.results
           .reduce((prev, curr) => prev.concat(curr), [])
@@ -133,7 +133,7 @@ export default class MSSQL extends GenericDialect<MSSQLLib.ConnectionPool> imple
   }
 
   public getColumns(): Promise<DatabaseInterface.TableColumn[]> {
-    return this.query(this.queries.fetchColumns)
+    return this.query(this.queries.fetchColumns())
       .then(([queryRes]) => {
         return queryRes.results
           .reduce((prev, curr) => prev.concat(curr), [])
@@ -152,7 +152,7 @@ export default class MSSQL extends GenericDialect<MSSQLLib.ConnectionPool> imple
   }
 
   public getFunctions(): Promise<DatabaseInterface.Function[]> {
-    return this.query(this.queries.fetchFunctions)
+    return this.query(this.queries.fetchFunctions())
       .then(([queryRes]) => {
         return queryRes.results
           .reduce((prev, curr) => prev.concat(curr), [])

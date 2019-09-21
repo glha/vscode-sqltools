@@ -5,7 +5,7 @@ export default {
   describeTable: `select * from all_tab_columns
     where table_name = ':table'
     and owner = ':schema'`,
-  fetchColumns: `select
+  fetchColumns: () => `select
   c.table_name as tablename,
   c.column_name as columnname,
   c.data_type as type,
@@ -38,7 +38,7 @@ export default {
   where c.owner = user
   ORDER BY c.table_name, c.column_id`,
   fetchRecords: 'select * from :table where rownum <= :limit',
-  fetchTables: `select
+  fetchTables: () => `select
   table_name as tableName,
   owner AS tableSchema,
   user AS tableCatalog,
@@ -66,7 +66,7 @@ export default {
   group by v.owner, v.view_name, user
   )
   where owner = user`,
-  fetchFunctions: `select
+  fetchFunctions: () => `select
   nvl(procedure_name, object_name) as name,
   owner as dbschema,
   sys_context ('USERENV', 'DB_NAME') as dbname,

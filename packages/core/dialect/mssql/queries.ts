@@ -3,7 +3,7 @@ import { TREE_SEP } from '../../constants';
 
 export default {
   describeTable: 'SP_COLUMNS :table',
-  fetchColumns: `
+  fetchColumns: () => `
 SELECT
   C.TABLE_NAME AS tableName,
   C.COLUMN_NAME AS columnName,
@@ -54,7 +54,7 @@ ORDER BY
   C.TABLE_NAME,
   C.ORDINAL_POSITION`,
   fetchRecords: 'SELECT TOP :limit * FROM :table',
-  fetchTables: `
+  fetchTables: () => `
 SELECT
   T.TABLE_NAME AS tableName,
   T.TABLE_SCHEMA AS tableSchema,
@@ -93,7 +93,7 @@ GROUP by
   T.TABLE_TYPE
 ORDER BY
   T.TABLE_NAME;`,
-  fetchFunctions: `
+  fetchFunctions: () => `
 SELECT
   f.specific_name AS name,
   f.routine_schema AS dbSchema,

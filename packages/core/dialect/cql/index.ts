@@ -153,7 +153,7 @@ export default class CQLDialect extends GenericDialect<CassandraLib.Client> impl
   }
 
   public async getTables(): Promise<DatabaseInterface.Table[]> {
-    const [queryResults] = await this.query(this.queries.fetchTables);
+    const [queryResults] = await this.query(this.queries.fetchTables());
     return queryResults.results.reduce((prev, curr) => prev.concat(curr), []).map((obj: any) => {
       const table: DatabaseInterface.Table = {
         name: obj.table_name,
@@ -166,7 +166,7 @@ export default class CQLDialect extends GenericDialect<CassandraLib.Client> impl
   }
 
   public async getColumns(): Promise<DatabaseInterface.TableColumn[]> {
-    const [queryResults] = await this.query(this.queries.fetchColumns);
+    const [queryResults] = await this.query(this.queries.fetchColumns());
     return queryResults.results.reduce((prev, curr) => prev.concat(curr), []).map((obj: any) => {
       const column: DatabaseInterface.TableColumn = {
         columnName: obj.column_name,
@@ -182,7 +182,7 @@ export default class CQLDialect extends GenericDialect<CassandraLib.Client> impl
   }
 
   public async getFunctions(): Promise<DatabaseInterface.Function[]> {
-    const [queryResults] = await this.query(this.queries.fetchFunctions);
+    const [queryResults] = await this.query(this.queries.fetchFunctions());
     return queryResults.results.reduce((prev, curr) => prev.concat(curr), []).map((obj: any) => {
       const func: DatabaseInterface.Function = {
         name: obj.function_name,

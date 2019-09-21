@@ -3,7 +3,7 @@ import { TREE_SEP } from '../../constants';
 
 export default {
   describeTable: 'SELECT * FROM pragma_table_info(\':table\') ORDER BY cid ASC',
-  fetchColumns: `
+  fetchColumns: () => `
 SELECT
   M.type || 's' || '${TREE_SEP}' || M.name || '${TREE_SEP}' || C.name AS tree,
   C.*
@@ -13,7 +13,7 @@ FROM
 ORDER BY
   cid ASC`,
   fetchRecords: 'SELECT * FROM :table LIMIT :limit',
-  fetchTables: `
+  fetchTables: () => `
 SELECT
   name AS tableName,
   type,

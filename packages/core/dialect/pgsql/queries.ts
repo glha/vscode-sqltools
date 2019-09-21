@@ -7,7 +7,7 @@ export default {
         TABLE_NAME = ':table'
         AND TABLE_CATALOG = ':catalog'
         AND TABLE_SCHEMA = ':schema'`,
-  fetchColumns: `
+  fetchColumns: () => `
 SELECT
   C.TABLE_NAME AS tableName,
   C.COLUMN_NAME AS columnName,
@@ -43,7 +43,7 @@ ORDER BY
   C.ORDINAL_POSITION
 `,
   fetchRecords: 'SELECT * FROM :table LIMIT :limit',
-  fetchTables: `
+  fetchTables: () => `
 SELECT
   T.TABLE_NAME AS tableName,
   T.TABLE_SCHEMA AS tableSchema,
@@ -76,7 +76,7 @@ GROUP by
   T.TABLE_TYPE
 ORDER BY
   T.TABLE_NAME;`,
-  fetchFunctions: `
+  fetchFunctions: () => `
 SELECT
   n.nspname AS schema,
   f.proname AS name,

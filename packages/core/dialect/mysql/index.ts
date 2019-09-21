@@ -1,6 +1,7 @@
 import {
   ConnectionDialect,
   ConnectionInterface,
+  DialectQueries,
 } from '@sqltools/core/interface';
 import GenericDialect from '@sqltools/core/dialect/generic';
 import Queries from './queries';
@@ -34,7 +35,7 @@ export default class MySQL extends GenericDialect<any> implements ConnectionDial
   }
 
   public getTables(): Promise<DatabaseInterface.Table[]> {
-    return this.driver.query(this.queries.fetchTables)
+    return this.driver.query(this.queries.fetchTables(this.getBaseQueryFilters()))
       .then(([queryRes]) => {
         return queryRes.results
           .reduce((prev, curr) => prev.concat(curr), [])
@@ -53,7 +54,7 @@ export default class MySQL extends GenericDialect<any> implements ConnectionDial
   }
 
   public getColumns(): Promise<DatabaseInterface.TableColumn[]> {
-    return this.driver.query(this.queries.fetchColumns)
+    return this.driver.query(this.queries.fetchColumns(this.getBaseQueryFilters()))
       .then(([queryRes]) => {
         return queryRes.results
           .reduce((prev, curr) => prev.concat(curr), [])
@@ -70,11 +71,8 @@ export default class MySQL extends GenericDialect<any> implements ConnectionDial
   }
 
   public async getFunctions(): Promise<DatabaseInterface.Function[]> {
-    const functions = await (
-      await this.is55OrNewer()
-        ? this.driver.query(this.queries.fetchFunctions)
-        : this.driver.query(this.queries.fetchFunctionsV55Older)
-    );
+    const fetchFunctions: DialectQueries['fetchFunctions'] = (await this.is55OrNewer() ? this.queries.fetchFunctions : this.queries.fetchFunctionsV55Older) as any;
+    const functions = await this.driver.query(fetchFunctions(this.getBaseQueryFilters()));
 
     return functions[0].results
       .reduce((prev, curr) => prev.concat(curr), [])

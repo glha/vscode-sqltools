@@ -1,9 +1,10 @@
-import { DialectQueries } from '@sqltools/core/interface';
+import { DialectQueries, DatabasesFilterType } from '@sqltools/core/interface';
 import { TREE_SEP } from '../../constants';
+import { isEmpty } from '../../utils';
 
 export default {
   describeTable: 'DESCRIBE :table',
-  fetchColumns: `
+  fetchColumns: ({ databaseFilter }: { databaseFilter: DatabasesFilterType }) => `
 SELECT
   C.TABLE_NAME AS tableName,
   C.COLUMN_NAME AS columnName,
@@ -53,13 +54,18 @@ FROM
   JOIN INFORMATION_SCHEMA.TABLES AS T ON C.TABLE_NAME = T.TABLE_NAME
   AND C.TABLE_SCHEMA = T.TABLE_SCHEMA
   AND C.TABLE_CATALOG = T.TABLE_CATALOG
+${!isEmpty(databaseFilter.show) || !isEmpty(databaseFilter.hide) ? `
 WHERE
-  C.TABLE_SCHEMA NOT IN ('information_schema', 'performance_schema', 'mysql', 'sys')
+  ${!isEmpty(databaseFilter.show)
+    ? `C.TABLE_SCHEMA IN (${databaseFilter.show.map(n => `'${n}'`).join(',')})`
+    : `C.TABLE_SCHEMA NOT IN (${databaseFilter.hide.map(n => `'${n}'`).join(',')})`
+  }
+` : ''}
 ORDER BY
   C.TABLE_NAME,
   C.ORDINAL_POSITION`,
   fetchRecords: 'SELECT * FROM :table LIMIT :limit',
-  fetchTables: `
+  fetchTables: ({ databaseFilter }: { databaseFilter: DatabasesFilterType}) => `
 SELECT
   T.TABLE_NAME AS tableName,
   T.TABLE_SCHEMA AS tableSchema,
@@ -89,8 +95,13 @@ FROM
   LEFT JOIN INFORMATION_SCHEMA.COLUMNS AS C ON C.TABLE_NAME = T.TABLE_NAME
   AND C.TABLE_SCHEMA = T.TABLE_SCHEMA
   AND (C.TABLE_CATALOG IS NULL OR C.TABLE_CATALOG = T.TABLE_CATALOG)
+${!isEmpty(databaseFilter.show) || !isEmpty(databaseFilter.hide) ? `
 WHERE
-  T.TABLE_SCHEMA NOT IN ('information_schema', 'performance_schema', 'mysql', 'sys')
+  ${!isEmpty(databaseFilter.show)
+    ? `T.TABLE_SCHEMA IN (${databaseFilter.show.map(n => `'${n}'`).join(',')})`
+    : `T.TABLE_SCHEMA NOT IN (${databaseFilter.hide.map(n => `'${n}'`).join(',')})`
+  }
+` : ''}
 GROUP BY
   T.TABLE_NAME,
   T.TABLE_SCHEMA,
@@ -98,7 +109,7 @@ GROUP BY
   T.TABLE_TYPE
 ORDER BY
   T.TABLE_NAME;`,
-  fetchFunctions: `
+  fetchFunctions: ({ databaseFilter }: { databaseFilter: DatabasesFilterType}) => `
 SELECT
   f.specific_name AS name,
   f.routine_schema AS dbschema,
@@ -131,8 +142,13 @@ FROM
     AND f.routine_schema = p.specific_schema
     AND f.routine_catalog = p.specific_catalog
   )
+${!isEmpty(databaseFilter.show) || !isEmpty(databaseFilter.hide) ? `
 WHERE
-  f.routine_schema NOT IN ('information_schema', 'performance_schema', 'mysql', 'sys')
+  ${!isEmpty(databaseFilter.show)
+    ? `f.routine_schema IN (${databaseFilter.show.map(n => `'${n}'`).join(',')})`
+    : `f.routine_schema NOT IN (${databaseFilter.hide.map(n => `'${n}'`).join(',')})`
+  }
+` : ''}
 GROUP BY
   f.specific_name,
   f.routine_schema,
@@ -141,7 +157,7 @@ GROUP BY
   f.routine_definition
 ORDER BY
   f.specific_name;`,
-  fetchFunctionsV55Older: `
+  fetchFunctionsV55Older: ({ databaseFilter }: { databaseFilter: DatabasesFilterType}) => `
 SELECT
   f.specific_name AS name,
   f.routine_schema AS dbschema,
@@ -167,8 +183,13 @@ SELECT
   f.routine_definition AS source
 FROM
   information_schema.routines AS f
+${!isEmpty(databaseFilter.show) || !isEmpty(databaseFilter.hide) ? `
 WHERE
-  f.routine_schema NOT IN ('information_schema', 'performance_schema', 'mysql', 'sys')
+  ${!isEmpty(databaseFilter.show)
+    ? `f.routine_schema IN (${databaseFilter.show.map(n => `'${n}'`).join(',')})`
+    : `f.routine_schema NOT IN (${databaseFilter.hide.map(n => `'${n}'`).join(',')})`
+  }
+` : ''}
 GROUP BY
   f.specific_name,
   f.routine_schema,
