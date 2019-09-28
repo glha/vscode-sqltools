@@ -84,7 +84,7 @@ export default abstract class GenericDialect<ConnectionType extends any> impleme
 
   public getBaseQueryFilters() {
     const databaseFilter: DatabasesFilterType = this.credentials.databasesFilter || <DatabasesFilterType>{};
-    databaseFilter.show = databaseFilter.show || (Utils.isEmpty(databaseFilter.hide) ? [this.credentials.database] : []);
+    databaseFilter.show = databaseFilter.show || (!databaseFilter.hide ? [this.credentials.database] : []);
     databaseFilter.hide = databaseFilter.hide || [];
 
     return {
