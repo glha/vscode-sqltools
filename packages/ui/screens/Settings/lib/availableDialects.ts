@@ -1,3 +1,4 @@
+import db2Icon from './../icons/db2.png';
 import mariadbIcon from './../icons/mariadb.png';
 import mssqlIcon from './../icons/mssql.png';
 import mysqlIcon from './../icons/mysql.png';
@@ -7,6 +8,7 @@ import redshiftIcon from './../icons/redshift.png';
 import sapHanaIcon from './../icons/sap_hana.png';
 import sqliteIcon from './../icons/sqlite.png';
 import cassandraIcon from './../icons/cassandra.png';
+import { DatabaseDialect } from '@sqltools/core/interface';
 
 const requirements = [
   'Node 6 or newer. 7 or newer is preferred.',
@@ -16,7 +18,7 @@ interface Dialect {
   icon: string;
   port: number;
   text: string;
-  value: string;
+  value: DatabaseDialect;
   experimental?: boolean;
   requirements?: typeof requirements;
   showHelperText?: boolean;
@@ -47,9 +49,22 @@ const genericRequiredFields = setting => {
 };
 
 const availableDialects: { [name: string]: Dialect } = {
+  DB2: {
+    port: 50000,
+    value: DatabaseDialect['DB2'],
+    text: 'DB2 (Node Native)',
+    experimental: true,
+    showHelperText: true,
+    requirements,
+    icon: db2Icon,
+    requiredProps: setting => {
+      const props = genericRequiredFields(setting);
+      return props;
+    }
+  },
   MySQL: {
     port: 3306,
-    value: 'MySQL',
+    value: DatabaseDialect['MySQL'],
     text: 'MySQL',
     icon: mysqlIcon,
     requiredProps: setting => {
@@ -59,7 +74,7 @@ const availableDialects: { [name: string]: Dialect } = {
   },
   MariaDB: {
     port: 3306,
-    value: 'MariaDB',
+    value: DatabaseDialect['MariaDB'],
     text: 'MariaDB',
     icon: mariadbIcon,
     requiredProps: setting => {
@@ -69,7 +84,7 @@ const availableDialects: { [name: string]: Dialect } = {
   },
   MSSQL: {
     port: 1433,
-    value: 'MSSQL',
+    value: DatabaseDialect['MSSQL'],
     text: 'MSSQL',
     icon: mssqlIcon,
     requiredProps: setting => {
@@ -79,7 +94,7 @@ const availableDialects: { [name: string]: Dialect } = {
   },
   PostgreSQL: {
     port: 5432,
-    value: 'PostgreSQL',
+    value: DatabaseDialect['PostgreSQL'],
     text: 'PostgreSQL',
     icon: postgresqlIcon,
     requiredProps: setting => {
@@ -89,7 +104,7 @@ const availableDialects: { [name: string]: Dialect } = {
   },
   'AWS Redshift': {
     port: 5432,
-    value: 'AWS Redshift',
+    value: DatabaseDialect['AWS Redshift'],
     text: 'AWS Redshift',
     icon: redshiftIcon,
     requiredProps: setting => {
@@ -99,7 +114,7 @@ const availableDialects: { [name: string]: Dialect } = {
   },
   OracleDB: {
     port: 1521,
-    value: 'OracleDB',
+    value: DatabaseDialect['OracleDB'],
     text: 'OracleDB (Node Native)',
     experimental: true,
     showHelperText: true,
@@ -112,7 +127,7 @@ const availableDialects: { [name: string]: Dialect } = {
     }
   },
   SQLite: {
-    value: 'SQLite',
+    value: DatabaseDialect['SQLite'],
     text: 'SQLite (Node Native)',
     port: null,
     showHelperText: true,
@@ -124,7 +139,7 @@ const availableDialects: { [name: string]: Dialect } = {
     }
   },
   SAPHana: {
-    value: 'SAPHana',
+    value: DatabaseDialect['SAPHana'],
     text: 'SAP Hana',
     port: 30000,
     showHelperText: true,
@@ -136,7 +151,7 @@ const availableDialects: { [name: string]: Dialect } = {
   },
   Cassandra: {
     port: 9042,
-    value: 'Cassandra',
+    value: DatabaseDialect['Cassandra'],
     text: 'Cassandra',
     experimental: true,
     showHelperText: true,
